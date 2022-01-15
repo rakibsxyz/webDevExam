@@ -1,0 +1,29 @@
+.Cards {
+
+    width: 25rem ;
+    height: 12rem;
+    flex: 1;
+    overflow: hidden;
+    word-wrap: break-word;
+    margin: 10px;
+    padding: 10px;
+   
+
+}
+
+.card-custom{
+    
+    max-width: 128px;
+}
+
+.Cards.bg-danger{
+    background-color: #eecccc  !important;
+}
+
+.Cards.bg-success{
+    background-color: #cceecc  !important;
+}
+
+.Cards a{
+ text-decoration: none;   
+}
