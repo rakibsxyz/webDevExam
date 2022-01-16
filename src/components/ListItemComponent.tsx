@@ -19,18 +19,21 @@ function ListItemComponent(props: Props) {
 
     const onButtonClickHandler = () => {
         if (fav) {
+            // item.isFav = false
             dispatch(removeauthor(item._id))
             setFav(false)
         }
         else {
             // debugger
-            dispatch(addAuthor(item))
+            // item.isFav = true
+            var tempItem: AuthorModel;
+            tempItem = item
+            tempItem.isFav = true
+            dispatch(addAuthor(tempItem))
             setFav(true)
         }
     }
-    useEffect(() => {
-
-    }, [fav])
+   
     return (
         <div className="col-3">
             <Card bg='light' text="dark" className="Cards">

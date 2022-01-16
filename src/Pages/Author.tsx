@@ -5,6 +5,7 @@ import { ApiResponseModel, AuthorModel } from '../models';
 import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from 'react-redux';
 import { addAuthor } from '../Redux/AuthorSlice';
+import Title from '../components/Title';
 
 
 function Author() {
@@ -14,7 +15,10 @@ function Author() {
     const [cardPerPage, setCardPerPage] = useState(10)
     const [skipNumber, setSkip] = useState(0)
     const state = useSelector((state: any) => state.authorReducer)
-    // console.log("state ", state)
+    const [favAuthors, setfavAuthors] = useState<AuthorModel[]>(state?.authorModelData)
+
+    const [favAuthorClicked, setFavAuthorClicked] = useState(false)
+    console.log("state ", state)
     const dispatch = useDispatch()
     const getAuthorData = async () => {
         const url = `https://api.quotable.io/authors?limit=${cardPerPage}&skip=${skipNumber}`
@@ -34,7 +38,9 @@ function Author() {
     }, [skipNumber])
 
 
-
+    useEffect(() => {
+        //    console.log("aaa",fav)
+    }, [favAuthorClicked])
     const paginateReact = (data: any) => {
         const newSkip = (data.selected) * cardPerPage
         setSkip(newSkip)
@@ -43,47 +49,70 @@ function Author() {
     const checkFavourite = (authors: AuthorModel[]) => {
         var modifiedAuthors: AuthorModel[] = []
         authors.forEach(author => {
-            if (state?.find((obj: any) => {
-               
+            var tempAuthor:AuthorModel;
+            tempAuthor = author
+            console.log("te",(state?.authorModelData.find((obj: any) => {
+              
+                return obj._id === author._id
+            })))
+            if (state?.authorModelData.find((obj: any) => {
+              
                 return obj._id === author._id
             })) {
-                console.log("huhaha ",state)
-                author.isFav=true
+                console.log("huhaha ", state)
+                tempAuthor.isFav = true
             }
             else {
-                author.isFav=false
+                tempAuthor.isFav = false
             }
 
-            modifiedAuthors.push(author)
+            modifiedAuthors.push(tempAuthor)
         });
 
         setAuthorData(modifiedAuthors)
     }
     return (
-        <div className="row mt-5 justify-content-center">
-            {authorData.length > 0 ? authorData.map((author) => {
+        <div className='"float-container"'>
+            <div className='float-child1'>
+                <h3 onClick={() => setFavAuthorClicked(false)}>Author</h3>
+                <h3 onClick={() => {
+                    console.log()
+                    setFavAuthorClicked(true)
+                }}>Fav Author</h3>
+            </div>
+            {favAuthorClicked && state.authorModelData.length > 0 ? state.authorModelData.map((author: AuthorModel) => {
                 return <ListItemComponent item={author} />
+
             }) : null}
 
-            {authorData.length > 0 ? <ReactPaginate
-                previousLabel={"previous"}
-                nextLabel={"next"}
-                breakLabel={"..."}
-                pageCount={totalCount / cardPerPage}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={paginateReact}
-                containerClassName={"pagination justify-content-center"}
-                pageClassName={"page-item"}
-                pageLinkClassName={"page-link"}
-                previousClassName={"page-item"}
-                previousLinkClassName={"page-link"}
-                nextClassName={"page-item"}
-                nextLinkClassName={"page-link"}
-                breakClassName={"page-item"}
-                breakLinkClassName={"page-link"}
-                activeClassName={"active"}
-            /> : null}
+            {!favAuthorClicked ?
+                <div className='float-child2'>
+                    <div className="row mt-5 justify-content-center">
+                        {authorData.length > 0 ? authorData.map((author) => {
+                            return <ListItemComponent item={author} />
+                        }) : null}
+
+                        {authorData.length > 0 ? <ReactPaginate
+                            previousLabel={"previous"}
+                            nextLabel={"next"}
+                            breakLabel={"..."}
+                            pageCount={totalCount / cardPerPage}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={paginateReact}
+                            containerClassName={"pagination justify-content-center"}
+                            pageClassName={"page-item"}
+                            pageLinkClassName={"page-link"}
+                            previousClassName={"page-item"}
+                            previousLinkClassName={"page-link"}
+                            nextClassName={"page-item"}
+                            nextLinkClassName={"page-link"}
+                            breakClassName={"page-item"}
+                            breakLinkClassName={"page-link"}
+                            activeClassName={"active"}
+                        /> : null}
+                    </div>
+                </div> : null}
         </div>
     )
 }

@@ -13,10 +13,13 @@ export const authorSlice = createSlice({
     reducers: {
           addAuthor(state, action: PayloadAction<AuthorModel>) {
             console.log("hi: ",action.payload)
-            state.authorModelData.push(action.payload)
+            var temp = [...state.authorModelData,action.payload]
+            state.authorModelData = temp
            
           },
           removeauthor(state, action: PayloadAction<string>) {
+            var index = state.authorModelData.findIndex(item => item._id === action.payload)
+            state.authorModelData.splice(index,1)
           },
        
     }
